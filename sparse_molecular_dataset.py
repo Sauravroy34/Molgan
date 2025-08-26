@@ -192,8 +192,7 @@ class SparseMolecularDataset():
         mol = Chem.RWMol()
 
         for node_label in node_labels:
-            mol.AddAtom(Chem.Atom(self.atom_decoder_m[node_label]))
-
+            mol.AddAtom(Chem.Atom(self.atom_decoder_m[int(node_label)]))
         for start, end in zip(*np.nonzero(edge_labels)):
             if start > end:
                 mol.AddBond(int(start), int(end), self.bond_decoder_m[edge_labels[start, end]])
