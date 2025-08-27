@@ -6,7 +6,7 @@ __all__ = ["Generator", "MolGANDiscriminator"]
 
 
 class Generator(nn.Module):
-    def __init__(self, latent_dim=32, N=9, T=5, Y=5, dropout_rate=0.25):
+    def __init__(self, latent_dim=32, N=9, T=5, Y=5, dropout_rate=0.01):
         super().__init__()
         
         self.latent_dim = latent_dim 
@@ -104,7 +104,7 @@ class GraphAggregationLayer(nn.Module):
 
 
 class MolGANDiscriminator(nn.Module):
-    def __init__(self, node_feature_dim=5, num_bond_types=5, dropout_rate=0.25):
+    def __init__(self, node_feature_dim=5, num_bond_types=4, dropout_rate=0.01):
         super().__init__()
         self.gcn_layer_1 = GraphConvolutionLayer(node_feature_dim, 64, num_bond_types)
         self.gcn_layer_2 = GraphConvolutionLayer(64, 32, num_bond_types)
