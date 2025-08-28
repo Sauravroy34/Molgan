@@ -2,9 +2,11 @@
 MolGAN (Molecular Generative Adversarial Network), a deep learning model designed to create new, chemically valid molecular structures.
 
 ## Output 
-1) using pure RL (lamda = 0)
+1) Using pure RL (lamda = 0)
 
 <img width="1250" height="250" alt="output_2" src="https://github.com/user-attachments/assets/082af58b-2d99-4f9b-83c7-0cf8ec52f89b" />
+2) Half wgan and RL (lambda = 0.5)
+<img width="1250" height="250" alt="output_0 5_lambda" src="https://github.com/user-attachments/assets/af1bbee3-7c51-4d6b-9e5f-7901f68118a5" />
 
 ## Architecture
 
