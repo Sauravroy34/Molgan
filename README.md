@@ -2,9 +2,13 @@
 Molecular genration using Genrative adversal networks and Reinforcement learing objective 
 
 
-Here is the output using pure RL
+Output using pure RL (lamda = 0)
+
+<img width="1250" height="250" alt="output_2" src="https://github.com/user-attachments/assets/082af58b-2d99-4f9b-83c7-0cf8ec52f89b" />
 
 ## Architecture
+
+<img width="1140" height="363" alt="download" src="https://github.com/user-attachments/assets/95fedfec-9ee7-44ac-90be-cd5b965ddb1a" />
 
 The architecture consits of 3 main sections: a generator, a discriminator, and a reward network.
 
@@ -14,6 +18,6 @@ The discriminator and reward network have the same architectures and recieve gra
 
 
 ## Refrences:
-Molgan paper
-Implementation-MolGan-Pytorch
+1) [Molgan paper](https://arxiv.org/pdf/1805.11973)
+2) [Implementation-MolGan-Pytorch](https://github.com/kfzyqin/Implementation-MolGAN-PyTorch)
 
