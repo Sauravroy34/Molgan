@@ -286,10 +286,10 @@ class SparseMolecularDataset():
         return self.__len
 
 
-# if __name__ == '__main__':
+if __name__ == '__main__':
 
-#     # QM9 dataset
-#     data = SparseMolecularDataset()
-#     # data.generate('qm9_5k.smi', validation=0.00021, test=0.00021, filters=lambda x: x.GetNumAtoms() <= 9)
-#     data.generate('qm9_5k.smi', filters=lambda x: x.GetNumAtoms() <= 9)
-#     data.save('qm9_5k.sparsedataset')
+    # QM9 dataset
+    data = SparseMolecularDataset()
+    # data.generate('qm9_5k.smi', validation=0.00021, test=0.00021, filters=lambda x: x.GetNumAtoms() <= 9)
+    data.generate('qm9_5k.smi', filters=lambda x: x.GetNumAtoms() <= 9)
+    data.save('qm9_5k.sparsedataset')

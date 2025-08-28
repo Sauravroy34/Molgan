@@ -41,7 +41,7 @@ class Solve:
             if epoch_i < total_epochs / 2:
                 self.lamd = 1  # Use WGAN loss only for the generator
             else:
-                self.lamd = 0  # Use combined WGAN + RL loss
+                self.lamd = 0.5  # Use combined WGAN + RL loss
 
             losses = defaultdict(list)
             scores = defaultdict(list)
@@ -61,33 +61,32 @@ class Solve:
                 a_tensor = label2onehot(a, self.b_dim)
                 x_tensor = label2onehot(x, self.m_dim)
                 z = torch.from_numpy(z).float()
-                for _ in range(self.n_critic):
-                    d_optim.zero_grad()
-                    real_logits = D(x_tensor,a_tensor)
-                    fake_adjancency , fake_nodes = G(z)
-                    (adj_hat,nodes_hat) = postprocess((fake_adjancency , fake_nodes))
-                    fake_logits = D(nodes_hat.detach(), adj_hat.detach())
+                d_optim.zero_grad()
+                real_logits = D(x_tensor,a_tensor)
+                fake_adjancency , fake_nodes = G(z)
+                (adj_hat,nodes_hat) = postprocess((fake_adjancency , fake_nodes))
+                fake_logits = D(nodes_hat.detach(), adj_hat.detach())
                     
-                    d_loss_wgan = torch.mean(fake_logits) - torch.mean(real_logits)
+                d_loss_wgan = torch.mean(fake_logits) - torch.mean(real_logits)
 
-                    eps = torch.rand(batch_dim, 1, 1, 1).to(a_tensor.device)
-                    a_hat_grad = (eps * a_tensor + (1 - eps) * fake_adjancency.detach()).requires_grad_(True)
-                    x_hat_grad = (eps.squeeze(-1) * x_tensor + (1 - eps.squeeze(-1)) * fake_nodes.detach()).requires_grad_(True)
+                eps = torch.rand(batch_dim, 1, 1, 1).to(a_tensor.device)
+                a_hat_grad = (eps * a_tensor + (1 - eps) * fake_adjancency.detach()).requires_grad_(True)
+                x_hat_grad = (eps.squeeze(-1) * x_tensor + (1 - eps.squeeze(-1)) * fake_nodes.detach()).requires_grad_(True)
             
-                    logits_hat = D(x_hat_grad, a_hat_grad)
-                    gradients = torch.autograd.grad(
+                logits_hat = D(x_hat_grad, a_hat_grad)
+                gradients = torch.autograd.grad(
                         outputs=logits_hat,
                         inputs=(x_hat_grad, a_hat_grad),
                         grad_outputs=torch.ones(logits_hat.size()).to(logits_hat.device),
                         create_graph=True, retain_graph=True,
                     )
-                    grad_flat = torch.cat((gradients[0].view(batch_dim, -1), gradients[1].view(batch_dim, -1)), dim=1)
-                    gradient_penalty = self.alpha * ((grad_flat.norm(2, dim=1) - 1) ** 2).mean()
+                grad_flat = torch.cat((gradients[0].view(batch_dim, -1), gradients[1].view(batch_dim, -1)), dim=1)
+                gradient_penalty = self.alpha * ((grad_flat.norm(2, dim=1) - 1) ** 2).mean()
 
-                    d_loss = d_loss_wgan + gradient_penalty
-                    if cur_step % self.n_critic != 0:
-                        d_loss.backward()
-                        d_optim.step()
+                d_loss = d_loss_wgan + gradient_penalty
+                if cur_step % self.n_critic != 0:
+                    d_loss.backward()
+                    d_optim.step()
                 losses['d_loss'].append(d_loss.item())
 
                 v_optim.zero_grad()
@@ -126,7 +125,7 @@ solver = Solve()
 G.train()
 D.train()
 R.train()
-total_epochs = 150 # As used in the paper for the 5k dataset
+total_epochs = 300 # As used in the paper for the 5k dataset
 
 # ==========================================================
 # 5. The Main Training Loop
