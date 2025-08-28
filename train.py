@@ -11,9 +11,9 @@ G = Generator()
 D = MolGANDiscriminator()
 R = MolGANDiscriminator()   
 
-g_optim = torch.optim.Adam(G.parameters(),lr = 1e-3,betas=(0.0,0.9))
-d_optim = torch.optim.Adam(D.parameters(),lr = 1e-3,betas=(0.0,0.9))
-v_optim = torch.optim.Adam(R.parameters(),lr = 1e-3,betas=(0.0,0.9))
+g_optim = torch.optim.Adam(G.parameters(),lr = 1e-3,betas=(0.0,0.5))
+d_optim = torch.optim.Adam(D.parameters(),lr = 1e-3,betas=(0.0,0.5))
+v_optim = torch.optim.Adam(R.parameters(),lr = 1e-3,betas=(0.0,0.5))
 
 data = SparseMolecularDataset()
 
@@ -39,7 +39,7 @@ class Solve:
             # As per the paper, the generator trains with WGAN loss only for the
             # first half of epochs (lambda=1.0) and a combined loss for the second half.
             if epoch_i < total_epochs / 2:
-                self.lamd = 0  # Use WGAN loss only for the generator
+                self.lamd = 1  # Use WGAN loss only for the generator
             else:
                 self.lamd = 0  # Use combined WGAN + RL loss
 
@@ -47,7 +47,7 @@ class Solve:
             scores = defaultdict(list)
             the_step = self.num_steps
             for a_step in range(the_step):
-
+                cur_step = self.num_steps * epoch_i + a_step
                 if train_val_test == 'val':
                     mols, _, _, a, x, _, _, _, _ = self.data.next_validation_batch()
                     z =  sample_z(a.shape[0])
@@ -85,8 +85,9 @@ class Solve:
                     gradient_penalty = self.alpha * ((grad_flat.norm(2, dim=1) - 1) ** 2).mean()
 
                     d_loss = d_loss_wgan + gradient_penalty
-                    d_loss.backward()
-                    d_optim.step()
+                    if cur_step % self.n_critic != 0:
+                        d_loss.backward()
+                        d_optim.step()
                 losses['d_loss'].append(d_loss.item())
 
                 v_optim.zero_grad()
@@ -97,8 +98,9 @@ class Solve:
                 reward_f = get_reward(nodes_hat.detach(),adj_hat.detach()).float().to(fake_reward.device)
                                    
                 loss_V = self.loss_fn(real_reward, reward_r) + self.loss_fn(fake_reward, reward_f)
-                loss_V.backward()
-                v_optim.step()
+                if cur_step % self.n_critic == 0:
+                    loss_V.backward()
+                    v_optim.step()
                 
                 # --- Generator Training (Unchanged) ---
                 g_optim.zero_grad()
@@ -110,8 +112,9 @@ class Solve:
                 g_loss_rl = -torch.mean(fake_reward_for_g)
                 
                 g_loss = self.lamd * g_loss_wgan + (1 - self.lamd) *g_loss_rl 
-                g_loss.backward()
-                g_optim.step()
+                if cur_step % self.n_critic == 0:
+                    g_loss.backward()
+                    g_optim.step()
                 losses['g_loss'].append(g_loss.item())
                 
                 print(f"Epoch {epoch_i} Losses -> D: {d_loss.item():.4f}, G: {g_loss.item():.4f}")
@@ -123,7 +126,7 @@ solver = Solve()
 G.train()
 D.train()
 R.train()
-total_epochs = 300 # As used in the paper for the 5k dataset
+total_epochs = 150 # As used in the paper for the 5k dataset
 
 # ==========================================================
 # 5. The Main Training Loop

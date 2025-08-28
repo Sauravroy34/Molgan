@@ -37,7 +37,7 @@ def label2onehot(labels, dim):
 def sample_z(batch_size):
         return np.random.normal(0, 1, size=(batch_size, 32))
 
-def postprocess(inputs, method = "soft_gumbel", temperature=1.):
+def postprocess(inputs, method = "softmax", temperature=1.):
         def listify(x):
             return x if type(x) == list or type(x) == tuple else [x]
 
@@ -58,7 +58,7 @@ def postprocess(inputs, method = "soft_gumbel", temperature=1.):
 
         return [delistify(e) for e in (softmax)]
     
-def reward(mols,metric ="validity,qed"):
+def reward(mols,metric ="qed,unique,validity,diversity"):
         rr = 1.
         for m in ('logp,sas,qed,unique' if metric == 'all' else metric).split(','):
 

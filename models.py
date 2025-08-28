@@ -25,7 +25,6 @@ class Generator(nn.Module):
             nn.ReLU(),
             nn.Dropout(p=dropout_rate), 
             nn.Linear(512, N * T),
-            nn.Softmax(dim=-1) 
         )
         
         self.adj_mlp = nn.Sequential(
@@ -39,7 +38,6 @@ class Generator(nn.Module):
             nn.ReLU(),
             nn.Dropout(p=dropout_rate), 
             nn.Linear(512, N * N * Y),
-            nn.Softmax(dim=-1) 
         )
         
     def forward(self, z):
@@ -50,6 +48,8 @@ class Generator(nn.Module):
         
         a = self.adj_mlp(z)
         a = a.view(batch_size, self.N, self.N, self.Y)
+        a = (a + a.permute(0, 2, 1, 3)) / 2
+
         
         return a, x
 
