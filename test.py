@@ -19,7 +19,7 @@ print("Model loaded successfully.")
 valid_mols = []
 total_generated = 0
 target_count = 10
-batch_size = 32
+batch_size = 468
 
 
 print(f"Starting molecule generation to find {target_count} valid molecules...")
