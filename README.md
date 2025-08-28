@@ -18,8 +18,6 @@ The architecture consists of 3 main sections: a generator, a discriminator, and 
 The generator takes a sample (z) from a standard normal distribution to generate a graph using an MLP (this limits the network to a fixed maximum size) to generate the graph at once. Specifically a dense adjacency tensor A (bond types) and an annotation matrix X (atom types) are produced. Since these are probabilities, a discrete, sparse x and a are generated through categorical sampling.
 
 The discriminator and reward network have the same architectures and receive graphs as inputs. A Relational-GCN and MLPs are used to produce the singular output
-## Trainig 
-
 
 ## References:
 1) [Molgan paper](https://arxiv.org/pdf/1805.11973)
