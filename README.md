@@ -19,7 +19,6 @@ The generator takes a sample (z) from a standard normal distribution to generate
 
 The discriminator and reward network have the same architectures and receive graphs as inputs. A Relational-GCN and MLPs are used to produce the singular output
 
-
 ## References:
 1) [Molgan paper](https://arxiv.org/pdf/1805.11973)
 2) [Implementation-MolGan-Pytorch](https://github.com/kfzyqin/Implementation-MolGAN-PyTorch)
