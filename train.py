@@ -58,8 +58,14 @@ class Solve:
                 a = torch.from_numpy(a).long()  
                 x = torch.from_numpy(x).long()  
                 a_tensor = label2onehot(a, self.b_dim)
-                x_tensor = label2onehot(x, self.m_dim)
-                z = torch.from_numpy(z).float()
+                x_tensor = label2onehot(x, self.m_dim)  
+                if epoch_i == 100:
+                                    
+                    z = torch.from_numpy(z).float()
+                    z = z + torch.rand_like(z)
+                else:
+                    z = torch.from_numpy(z).float()
+
                 d_optim.zero_grad()
                 real_logits = D(x_tensor,a_tensor)
                 fake_adjancency , fake_nodes = G(z)
