@@ -19,7 +19,7 @@ print("Model loaded successfully.")
 valid_mols = []
 seen_smiles = set()  # --- NEW: Set to store SMILES of found molecules
 total_generated = 0
-target_count = 5
+target_count = 2
 batch_size = 32
 
 print(f"Starting molecule generation to find {target_count} unique valid molecules...")

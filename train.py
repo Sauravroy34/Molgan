@@ -1,8 +1,7 @@
 import torch 
 from models import Generator , MolGANDiscriminator
-from utils import MolecularMetrics
 from sparse_molecular_dataset import SparseMolecularDataset
-from tools import postprocess,get_reward,sample_z,label2onehot,reward,get_gen_mols,save_mol_img
+from tools import postprocess,get_reward,sample_z,label2onehot,reward
 from collections import defaultdict
 import torch.nn as nn
 
@@ -41,7 +40,7 @@ class Solve:
             if epoch_i < total_epochs / 2:
                 self.lamd = 1  # Use WGAN loss only for the generator
             else:
-                self.lamd = 0.5  # Use combined WGAN + RL loss
+                self.lamd = 1  # Use combined WGAN or RL loss
 
             losses = defaultdict(list)
             scores = defaultdict(list)
@@ -140,6 +139,5 @@ for epoch_i in range(total_epochs):
 print("Training finished.")
 
 torch.save(G.state_dict(), "Generator.pth")
-torch.save(D.state_dict(), "Critic.pth")
-torch.save(R.state_dict(), "Reward.pth")
+
 
