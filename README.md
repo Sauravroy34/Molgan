@@ -8,7 +8,7 @@ MolGAN (Molecular Generative Adversarial Network), a deep learning model designe
 
 2) Half wgan and RL (lambda = 0.5)
 <img width="1250" height="250" alt="output_0 5_lambda" src="https://github.com/user-attachments/assets/af1bbee3-7c51-4d6b-9e5f-7901f68118a5" />
-3) Pure wgan
+3) Pure wgan (lambda = 1)
 <img width="1250" height="250" alt="pure_wgan" src="https://github.com/user-attachments/assets/bdd69193-3ff0-4005-adb9-7465a9eaa542" />
 
 ## Architecture
